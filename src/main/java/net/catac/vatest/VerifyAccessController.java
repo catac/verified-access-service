@@ -81,7 +81,7 @@ public class VerifyAccessController {
             .setExpectedIdentity(expectedIdentity == null ? "" : expectedIdentity);
         return request;
     }
-    
+
     @CrossOrigin
     @PostMapping("/challengeResponseRequest")
     public VerifyChallengeResponseResult challenge(@RequestBody ChallengeResponseRequest challengeResponseRequest) throws Exception {
@@ -92,6 +92,7 @@ public class VerifyAccessController {
         VerifyChallengeResponseRequest vcrr = new VerifyChallengeResponseRequest()
                 .setChallengeResponse(sd)
                 .setExpectedIdentity(challengeResponseRequest.getExpectedIdentity());
+        vcrr.setFactory(jsonFactory);
         return call(vcrr);
     }
 
