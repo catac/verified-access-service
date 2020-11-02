@@ -2,6 +2,10 @@
 
 This is a test to use Google's VerifiedAccess API
 
+cvaa-server-test
+
+cvaa: Chromebook Verified Access 
+
 ## Some links
 - https://developers.google.com/chrome/verified-access/overview?hl=en_US
 - https://cloud.google.com/storage/docs/authentication#generating-a-private-key

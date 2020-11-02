@@ -29,29 +29,11 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>io.grpc</groupId>-->
-<!--			<artifactId>grpc-netty</artifactId>-->
-<!--			<version>1.33.0</version>-->
-<!--		</dependency>-->
-
-<!--		<dependency>-->
-<!--			<groupId>io.grpc</groupId>-->
-<!--			<artifactId>grpc-auth</artifactId>-->
-<!--			<version>1.33.0</version>-->
-<!--		</dependency>-->
-
-<!--		<dependency>-->
-<!--			<groupId>com.google.auth</groupId>-->
-<!--			<artifactId>google-auth-library-oauth2-http</artifactId>-->
-<!--			<version>0.22.0</version>-->
-<!--		</dependency>-->
-
-<!--		<dependency>-->
-<!--			<groupId>com.google.api-client</groupId>-->
-<!--			<artifactId>google-api-client</artifactId>-->
-<!--			<version>1.30.11</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>com.google.auth</groupId>
+			<artifactId>google-auth-library-oauth2-http</artifactId>
+			<version>0.22.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.apis</groupId>
