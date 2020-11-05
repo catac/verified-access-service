@@ -1,10 +1,7 @@
-# verified-access-test
+# verified-access-service
 
-This is a test to use Google's VerifiedAccess API
-
-cvaa-server-test
-
-cvaa: Chromebook Verified Access 
+This is a TEST implementation of the "Network Service" in the
+[Chrome Verified Access Developer's Guide](https://developers.google.com/chrome/verified-access/developer-guide).
 
 ## Some links
 - https://developers.google.com/chrome/verified-access/overview?hl=en_US
@@ -16,3 +13,10 @@ cvaa: Chromebook Verified Access
 - https://github.com/googleapis/google-api-java-client-services/tree/master/clients/google-api-services-verifiedaccess/v1
 - https://developers.google.com/api-client-library/java/google-api-java-client/oauth2
 - https://github.com/googleapis/google-auth-library-java
+
+## Tests
+
+```
+curl http://localhost:8080/
+curl -v -H 'Content-type:application/json' -X POST -d@test-verify.json localhost:8080/authenticate
+```

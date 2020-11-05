@@ -1,4 +1,4 @@
-package net.catac.vatest;
+package net.catac.verifiedaccess;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

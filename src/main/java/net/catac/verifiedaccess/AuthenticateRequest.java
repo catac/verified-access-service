@@ -1,8 +1,8 @@
-package net.catac.vatest;
+package net.catac.verifiedaccess;
 
 import java.util.Map;
 
-public class ChallengeResponseRequest {
+public class AuthenticateRequest {
     private Map<String, String> challengeResponse;
     private String expectedIdentity;
 

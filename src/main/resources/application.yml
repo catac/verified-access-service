@@ -1,0 +1,12 @@
+server:
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: /dev
+      prefix: stdout
+      buffered: false
+      suffix: ""
+      file-date-format: ""
+
+verifiedaccess:
+  clientSecretFile: "/Users/ccirstoiu/Downloads/cvaa-server-test-34757cfc2b28.json"

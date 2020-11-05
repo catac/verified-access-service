@@ -1,4 +1,4 @@
-package net.catac.vatest;
+package net.catac.verifiedaccess;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -13,6 +13,7 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,14 +29,16 @@ import java.util.Map;
 
 @RestController
 public class VerifyAccessController {
-    Logger logger = LoggerFactory.getLogger(VerifyAccessController.class);
+    private static final Logger logger = LoggerFactory.getLogger(VerifyAccessController.class);
+
+    @Value("${verifiedaccess.clientSecretFile}")
+    private String clientSecretFile = "/Users/ccirstoiu/Downloads/cvaa-server-test-34757cfc2b28.json";
 
     private NetHttpTransport httpTransport;
     private JsonFactory jsonFactory;
     private HttpRequestInitializer requestInitializer;
 
     // https://cloud.google.com/storage/docs/authentication#generating-a-private-key
-    private final String clientSecretFile = "/Users/ccirstoiu/Downloads/cvaa-server-test-34757cfc2b28.json";
 
     @PostConstruct
     private void setup() throws IOException, GeneralSecurityException {
@@ -54,7 +57,7 @@ public class VerifyAccessController {
         logger.info("Calling with: " + request.toPrettyString());
         Verifiedaccess va = new Verifiedaccess
                 .Builder(httpTransport, jsonFactory, requestInitializer)
-                .setApplicationName("VA-Test/0.1")
+                .setApplicationName("VA-Service/0.1")
                 .build();
 
         VerifyChallengeResponseResult result = va.challenge()
@@ -64,45 +67,17 @@ public class VerifyAccessController {
         return result;
     }
 
-    /**
-     * Invokes the synchronous RPC call that verifies the device response.
-     * Returns the result protobuf as a string.
-     *
-     * @param signedData base64 encoded signedData blob (this is a response from device)
-     * @param expectedIdentity expected identity (domain name or user email)
-     * @return the verification result protobuf as string
-     */
-    private VerifyChallengeResponseRequest newVerificationRequest(
-            String signedData, String expectedIdentity) throws IOException {
-        SignedData sd = new SignedData()
-                .setData(signedData);
-        VerifyChallengeResponseRequest request = new VerifyChallengeResponseRequest()
-            .setChallengeResponse(sd)
-            .setExpectedIdentity(expectedIdentity == null ? "" : expectedIdentity);
-        return request;
-    }
-
     @CrossOrigin
-    @PostMapping("/challengeResponseRequest")
-    public VerifyChallengeResponseResult challenge(@RequestBody ChallengeResponseRequest challengeResponseRequest) throws Exception {
-        Map<String, String> challengeResponse = challengeResponseRequest.getChallengeResponse();
+    @PostMapping("/authenticate")
+    public VerifyChallengeResponseResult authenticate(@RequestBody AuthenticateRequest authenticateRequest) throws Exception {
+        Map<String, String> challengeResponse = authenticateRequest.getChallengeResponse();
         SignedData sd = new SignedData()
                 .setData(challengeResponse.get("data"))
                 .setSignature(challengeResponse.get("signature"));
         VerifyChallengeResponseRequest vcrr = new VerifyChallengeResponseRequest()
                 .setChallengeResponse(sd)
-                .setExpectedIdentity(challengeResponseRequest.getExpectedIdentity());
+                .setExpectedIdentity(authenticateRequest.getExpectedIdentity());
         vcrr.setFactory(jsonFactory);
         return call(vcrr);
-    }
-
-    public static void main(String[] args) throws Exception {
-        VerifyAccessController vac = new VerifyAccessController();
-        vac.setup();
-
-        String signedData = "";
-        String expectedIdentity = "";
-        VerifyChallengeResponseRequest vcrr = vac.newVerificationRequest(signedData, expectedIdentity);
-        vac.call(vcrr);
     }
 }
