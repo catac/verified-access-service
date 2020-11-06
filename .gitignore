@@ -31,5 +31,14 @@ build/
 ### VS Code ###
 .vscode/
 
-### Custom
+### CA config
+/ca/ca.key
+/ca/ca.crt
+/ca/ca.crl
+/ca/work/*
+/ca/newcerts/*
+
+# Test
+/response-user.json
+/response-user.spkac
 /test-verify.json

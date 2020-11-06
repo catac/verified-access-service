@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>net.catac</groupId>
-	<artifactId>verified-access-test</artifactId>
+	<artifactId>verified-access-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>verified-access-test</name>
-	<description>Google VerifiedAccess test</description>
+	<name>verified-access-service</name>
+	<description>Google VerifiedAccess Service</description>
 
 	<properties>
 		<java.version>11</java.version>
@@ -27,6 +27,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
 		</dependency>
 
 		<dependency>

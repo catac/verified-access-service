@@ -9,4 +9,4 @@ server:
       file-date-format: ""
 
 verifiedaccess:
-  clientSecretFile: "/Users/ccirstoiu/Downloads/cvaa-server-test-34757cfc2b28.json"
+  clientSecretFile: "client-secrets.json"

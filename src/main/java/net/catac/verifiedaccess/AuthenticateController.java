@@ -28,17 +28,15 @@ import java.util.Arrays;
 import java.util.Map;
 
 @RestController
-public class VerifyAccessController {
-    private static final Logger logger = LoggerFactory.getLogger(VerifyAccessController.class);
+public class AuthenticateController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticateController.class);
 
     @Value("${verifiedaccess.clientSecretFile}")
-    private String clientSecretFile = "/Users/ccirstoiu/Downloads/cvaa-server-test-34757cfc2b28.json";
+    private String clientSecretFile;
 
     private NetHttpTransport httpTransport;
     private JsonFactory jsonFactory;
     private HttpRequestInitializer requestInitializer;
-
-    // https://cloud.google.com/storage/docs/authentication#generating-a-private-key
 
     @PostConstruct
     private void setup() throws IOException, GeneralSecurityException {
