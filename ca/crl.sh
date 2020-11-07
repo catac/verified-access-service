@@ -2,4 +2,6 @@
 
 cd $(dirname $0)
 
-openssl ca -config ca.cnf -gencrl -out ca.crl
+openssl ca -config ca.cnf -gencrl -out ca.crl.pem
+openssl crl -in ca.crl.pem -out ca.crl -outform der
+rm ca.crl.pem

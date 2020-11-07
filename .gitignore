@@ -39,6 +39,7 @@ build/
 /ca/newcerts/*
 
 # Test
+client-secrets.json
 /response-user.json
 /response-user.spkac
 /test-verify.json

@@ -32,7 +32,11 @@ policy = my_policy
 # allow re-issuing certificates
 unique_subject = no
 
-default_crl_days = 365
+# how long the crl is valid
+default_crl_days = 7
+
+# The extentions to add to the cert
+x509_extensions = usr_cert
 
 [ my_policy ]
 # if the value is "match" then the field value must match the same field in the
@@ -44,3 +48,10 @@ stateOrProvinceName = supplied
 organizationName = supplied
 organizationalUnitName = optional
 commonName = supplied
+
+[ usr_cert ]
+# This is the link where we can get the issuer certificate
+issuerAltName = URI:https://va-service.example.com/ca.crt
+
+# This is the link where to get the latest CRL
+crlDistributionPoints = URI:https://va-service.example.com/ca.crl
