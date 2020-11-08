@@ -43,9 +43,9 @@ x509_extensions = usr_cert
 # CA certificate. If the value is "supplied" then it must be present.
 # Optional means it may be present. Any fields not mentioned are silently
 # deleted.
-countryName = supplied
-stateOrProvinceName = supplied
-organizationName = supplied
+countryName = optional
+stateOrProvinceName = optional
+organizationName = optional
 organizationalUnitName = optional
 commonName = supplied
 

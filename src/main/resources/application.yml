@@ -9,4 +9,4 @@ server:
       file-date-format: ""
 
 verifiedaccess:
-  clientSecretFile: "client-secrets.json"
+  googleCredentialsFile: "client-secrets.json"

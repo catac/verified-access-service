@@ -25,9 +25,22 @@ This is a TEST implementation of the "Network Service" in the
 ```
 mvn package
 java -jar target/verified-access-service-*.jar
+
 ...
 
-curl http://localhost:8080/
+# get signing certificate
+curl -v localhost:8080/ca.crt | openssl x509 -text -noout -inform pem
+
+# get current crl
+curl -v localhost:8080/ca.crl | openssl crl -text -noout -inform der
+
+# sign a certificate using the signing script
+cat spkac-to-sign.req | ca/sign.sh 
+
+# sign a certificate based on the PSKAC response from Google API => certificate in der-base64
+curl -sS -X POST -H "Content-Type: text/plain" -d@spkac.raw localhost:8080/sign/user@example.com
+
+# actual call: auth a challenge request and get the signed certificate
 curl -v -H 'Content-type:application/json' -X POST -d@test-verify.json localhost:8080/authenticate
 ```
 

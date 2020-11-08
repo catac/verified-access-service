@@ -12,6 +12,4 @@
 # O=Organisation
 
 cd $(dirname $0)
-echo >>work/sign.log
-echo "################ $(date) ################" >>work/sign.log
-openssl ca -config ca.cnf -spkac /dev/stdin -out - 2>>work/sign.log | base64
+openssl ca -config ca.cnf -spkac /dev/stdin -out - | base64 -w 0
