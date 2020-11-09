@@ -5,12 +5,14 @@ This is a TEST implementation of the "Network Service" in the
 
 ## Setup
 
+### Google Cloud console
 - Login into the Google Cloud console: https://console.cloud.google.com/
 - Create an API Key and a Service Account under API & Services -> Credentials
 - Under the Service Account, create a key and download the json file
 - The API Key should be used on the Chromebook to generate the challenge
 - The json credentials file associated to the Service Account will be used by this service
 
+### Google Admin console
 - Login into the Google Admin console: https://admin.google.com/
 - Go to Devices -> Chrome -> Settings for your organization
 - Under User & Browser Settings -> User verification -> Verified Mode, allow the
@@ -18,12 +20,14 @@ This is a TEST implementation of the "Network Service" in the
 - Under User & Browser Settings -> Device Settings -> Enrollment and Access -> Verified mode,
   allow full access to the same service account email address. 
 
+### Locally
 - Initialize the local CA, go into the `ca` subdir and run `./init.sh`
+- Save the 'json credentials file' as `google-client-secrets.json`
 
 ## Tests
 
 ```
-mvn package
+mvn clean package
 java -jar target/verified-access-service-*.jar
 
 ...
@@ -38,10 +42,10 @@ curl -v localhost:8080/ca.crl | openssl crl -text -noout -inform der
 cat spkac-to-sign.req | ca/sign.sh 
 
 # sign a certificate based on the PSKAC response from Google API => certificate in der-base64
-curl -sS -X POST -H "Content-Type: text/plain" -d@spkac.raw localhost:8080/sign/user@example.com
+curl -X POST -H 'Content-type:application/json' -d@verify-response.json localhost:8080/sign/user@example.com
 
 # actual call: auth a challenge request and get the signed certificate
-curl -v -H 'Content-type:application/json' -X POST -d@test-verify.json localhost:8080/authenticate
+curl -X POST -H 'Content-type:application/json' -d@verify-request.json localhost:8080/authenticate
 ```
 
 ## Additional links

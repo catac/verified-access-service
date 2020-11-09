@@ -19,17 +19,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Map;
@@ -39,7 +35,7 @@ public class AuthenticateController {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticateController.class);
 
     @Autowired
-    private CAHelper caHelper;
+    private ProcessHelper processHelper;
 
     @Value("${verifiedaccess.googleCredentialsFile}")
     private String googleCredentialsFile;
@@ -50,13 +46,14 @@ public class AuthenticateController {
 
     @PostConstruct
     private void setup() throws IOException, GeneralSecurityException {
-        logger.info("Setting up httpTransport, jsonFactory and Google Credentials ...");
+        logger.info("Setting up httpTransport, jsonFactory ...");
         this.httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         this.jsonFactory = JacksonFactory.getDefaultInstance();
+        logger.info("Loading Google Credentials from " + googleCredentialsFile);
         GoogleCredentials credentials = GoogleCredentials
                 .fromStream(new FileInputStream(new File(googleCredentialsFile)))
                 .createScoped(
-                        Arrays.<String>asList("https://www.googleapis.com/auth/verifiedaccess"));
+                        Arrays.asList("https://www.googleapis.com/auth/verifiedaccess"));
         credentials.refreshIfExpired();
         this.requestInitializer = new HttpCredentialsAdapter(credentials);
     }
@@ -68,17 +65,20 @@ public class AuthenticateController {
 
         VerifyChallengeResponseResult apiResponse = callGoogleAPI(apiRequest);
 
-        String pskac = apiResponse.getSignedPublicKeyAndChallenge();
+        String spkac = apiResponse.getSignedPublicKeyAndChallenge();
         String identity = apiRequest.getExpectedIdentity();
-        String certificateDerB64 = signCertificate(pskac, identity);
+        String certificateDerB64 = signCertificate(spkac, identity);
 
-        AuthenticateResponse authenticateResponse = new AuthenticateResponse()
-                .setIdentity(identity)
-                .setCertificateDerB64(certificateDerB64);
-        return authenticateResponse;        
+        return buildAuthenticateResponse(identity, certificateDerB64);
     }
 
-    private VerifyChallengeResponseRequest buildApiRequest(AuthenticateRequest authenticateRequest){
+    private AuthenticateResponse buildAuthenticateResponse(String identity, String certificateDerB64) {
+        return new AuthenticateResponse()
+                .setIdentity(identity)
+                .setCertificateDerB64(certificateDerB64);
+    }
+
+    private VerifyChallengeResponseRequest buildApiRequest(AuthenticateRequest authenticateRequest) {
         Map<String, String> challengeResponse = authenticateRequest.getChallengeResponse();
         SignedData sd = new SignedData()
                 .setData(challengeResponse.get("data"))
@@ -87,10 +87,10 @@ public class AuthenticateController {
                 .setChallengeResponse(sd)
                 .setExpectedIdentity(authenticateRequest.getExpectedIdentity());
         apiRequest.setFactory(jsonFactory);
-        return apiRequest;    
+        return apiRequest;
     }
 
-    private VerifyChallengeResponseResult callGoogleAPI(VerifyChallengeResponseRequest request) throws GeneralSecurityException, IOException {
+    private VerifyChallengeResponseResult callGoogleAPI(VerifyChallengeResponseRequest request) throws IOException {
         logger.info("Calling with: " + request.toPrettyString());
         Verifiedaccess va = new Verifiedaccess
                 .Builder(httpTransport, jsonFactory, requestInitializer)
@@ -104,16 +104,15 @@ public class AuthenticateController {
         return result;
     }
 
-    private String signCertificate(String pskac, String identity) throws Exception {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SPKAC=").append(pskac).append("\n");
-        sb.append("CN=").append(identity).append("\n");
-
-        return caHelper.runCAScript("sign.sh", sb.toString());
+    private String signCertificate(String spkac, String identity) throws Exception {
+        String sb = "SPKAC=" + spkac + "\n" +
+                "CN=" + identity + "\n";
+        return processHelper.runCAScript("ca/sign.sh", sb);
     }
 
     @PostMapping("/sign/{identity}")
-    public String signPSKAC(@RequestBody String pskac, @PathVariable("identity") String identity) throws Exception {
-        return signCertificate(pskac, identity);
+    public AuthenticateResponse signPSKAC(@RequestBody VerifyChallengeResponseResult result, @PathVariable("identity") String identity) throws Exception {
+        String certificateDerB64 = signCertificate(result.getSignedPublicKeyAndChallenge(), identity);
+        return buildAuthenticateResponse(identity, certificateDerB64);
     }
 }

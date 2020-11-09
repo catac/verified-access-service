@@ -14,11 +14,11 @@ import java.nio.file.Paths;
 public class CAController {
 
     @Autowired
-    private CAHelper caHelper;
+    private ProcessHelper processHelper;
 
     @Scheduled(fixedDelay = 24L * 60 * 60 * 1000)
     public void scheduleFixedDelayTask() throws Exception {
-        caHelper.runCAScript("crl.sh", "");
+        processHelper.runCAScript("ca/crl.sh", "");
     }
 
     // The CA in PEM format

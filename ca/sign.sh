@@ -12,4 +12,4 @@
 # O=Organisation
 
 cd $(dirname $0)
-openssl ca -config ca.cnf -spkac /dev/stdin -out - | base64 -w 0
+openssl ca -config ca.cnf -spkac /dev/stdin -out - | base64 | tr -d '\n'

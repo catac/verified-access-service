@@ -13,19 +13,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CAHelper {
-    private static final Logger logger = LoggerFactory.getLogger(CAHelper.class);
+public class ProcessHelper {
+    private static final Logger logger = LoggerFactory.getLogger(ProcessHelper.class);
 
     private String readAllLines(InputStream is) {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String lines = br.lines().collect(Collectors.joining("\n"));
-        return lines;
+        return br.lines()
+                .collect(Collectors.joining("\n"));
     }
 
     public String runCAScript(String script, String input) throws InterruptedException, IOException {
         logger.info("Running ca script " + script + " with input:\n=====\n" + input + "=====");
         ProcessBuilder pb = new ProcessBuilder();
-        pb.command("sh", "-c", "ca/" + script);
+        pb.command("sh", "-c", script);
         Process proc = pb.start();
         if (input != null) {
             Writer w = new OutputStreamWriter(proc.getOutputStream()).append(input);
@@ -33,18 +33,18 @@ public class CAHelper {
             w.close();
         }
         int exit = proc.waitFor();
-        if (exit != 0) {
-            logger.error("Failed refreshing running CA script " + script);
-        }
         String output = readAllLines(proc.getInputStream());
         String error = readAllLines(proc.getErrorStream());
-        StringBuilder sb = new StringBuilder();
-        sb.append("Finished running script ").append(script)
-            .append(" with exit code ").append(exit)
-            .append(" and output:\n====\n").append(output)
-            .append("\n====\nand error:\n====\n").append(error)
-            .append("\n====");
-        logger.info(sb.toString());
+        String logLine = "Finished running script " + script +
+                " with exit code " + exit +
+                " and output:\n====\n" + output +
+                "\n====\nand error:\n====\n" + error +
+                "\n====";
+        if (exit != 0) {
+            logger.error(logLine);
+        } else{
+            logger.info(logLine);
+        }
         return output;
     }
 }
