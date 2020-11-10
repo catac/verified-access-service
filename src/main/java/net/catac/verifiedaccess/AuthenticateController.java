@@ -5,6 +5,7 @@ import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.Preconditions;
 import com.google.api.services.verifiedaccess.v1.Verifiedaccess;
 import com.google.api.services.verifiedaccess.v1.model.SignedData;
 import com.google.api.services.verifiedaccess.v1.model.VerifyChallengeResponseRequest;
@@ -37,7 +38,7 @@ public class AuthenticateController {
     @Autowired
     private ProcessHelper processHelper;
 
-    @Value("${verifiedaccess.googleCredentialsFile}")
+    @Value("${authenticate.googleCredentialsFile}")
     private String googleCredentialsFile;
 
     private NetHttpTransport httpTransport;
@@ -79,7 +80,13 @@ public class AuthenticateController {
     }
 
     private VerifyChallengeResponseRequest buildApiRequest(AuthenticateRequest authenticateRequest) {
+        Preconditions.checkNotNull(authenticateRequest);
+        Preconditions.checkNotNull(authenticateRequest.getExpectedIdentity());
         Map<String, String> challengeResponse = authenticateRequest.getChallengeResponse();
+        Preconditions.checkNotNull(challengeResponse);
+        Preconditions.checkNotNull(challengeResponse.get("data"));
+        Preconditions.checkNotNull(challengeResponse.get("signature"));
+
         SignedData sd = new SignedData()
                 .setData(challengeResponse.get("data"))
                 .setSignature(challengeResponse.get("signature"));

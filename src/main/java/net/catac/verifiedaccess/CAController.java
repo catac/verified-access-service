@@ -24,12 +24,12 @@ public class CAController {
     // The CA in PEM format
     @RequestMapping("/ca.crt")
     public byte[] ca_pem() throws IOException {
-        return Files.readAllBytes(Paths.get("ca/ca.crt"));
+        return Files.readAllBytes(Paths.get("ca/files/ca.crt"));
     }
 
     // The CRL in DER format
     @RequestMapping("/ca.crl")
     public byte[] ca_crl() throws IOException {
-        return Files.readAllBytes(Paths.get("ca/ca.crl"));
+        return Files.readAllBytes(Paths.get("ca/files/ca.crl"));
     }
 }

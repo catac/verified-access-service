@@ -2,12 +2,25 @@
 
 cd $(dirname $0)
 
-mkdir -p newcerts work
-touch work/index.txt
-test -r work/serial || echo '01' > work/serial
+mkdir -p files/newcerts files/work
+touch files/work/index.txt
+test -r files/work/serial || echo '01' > files/work/serial
 
-echo "Checking or initialising ca.key ..."
-test -r ca.key || openssl genrsa -out ca.key 2048
+echo "Checking or initialising files/ca.key ..."
+test -r files/ca.key || openssl genrsa -out files/ca.key 2048
 
-echo "Checking or initialising ca.crt ..."
-test -r ca.crt || openssl req -new -x509 -key ca.key -out ca.crt
+echo "Checking or initialising files/ca.crt ..."
+test -r files/ca.crt || openssl req -new -x509 -key files/ca.key -out files/ca.crt
+
+echo "Checking or initializing files/ca.cnf ..."
+if [ ! -r files/ca.cnf ]; then
+    read -p "VA-Service URL: " base_url
+    cat <<EOT > files/ca.cnf
+[ usr_cert ]
+# This is the link where we can get the issuer certificate
+issuerAltName = URI:${base_url}/ca.crt
+
+# This is the link where to get the latest CRL
+crlDistributionPoints = URI:${base_url}/ca.crl
+EOT
+fi

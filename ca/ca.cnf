@@ -5,20 +5,20 @@ default_ca = my_ca
 [ my_ca ]
 #  a text file containing the next serial number to use in hex. Mandatory.
 #  This file must be present and contain a valid serial number.
-serial = ./work/serial
+serial = ./files/work/serial
 
 # the text database file to use. Mandatory. This file must be present though
 # initially it will be empty.
-database = ./work/index.txt
+database = ./files/work/index.txt
 
 # specifies the directory where new certificates will be placed. Mandatory.
-new_certs_dir = ./newcerts
+new_certs_dir = ./files/newcerts
 
 # the file containing the CA certificate. Mandatory
-certificate = ./ca.crt
+certificate = ./files/ca.crt
 
 # the file contaning the CA private key. Mandatory
-private_key = ./ca.key
+private_key = ./files/ca.key
 
 # the message digest algorithm. Remember to not use MD5
 default_md = sha256
@@ -49,9 +49,4 @@ organizationName = optional
 organizationalUnitName = optional
 commonName = supplied
 
-[ usr_cert ]
-# This is the link where we can get the issuer certificate
-issuerAltName = URI:https://va-service.example.com/ca.crt
-
-# This is the link where to get the latest CRL
-crlDistributionPoints = URI:https://va-service.example.com/ca.crl
+.include ./files/ca.cnf

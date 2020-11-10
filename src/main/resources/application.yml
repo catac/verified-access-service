@@ -8,5 +8,8 @@ server:
       suffix: ""
       file-date-format: ""
 
-verifiedaccess:
+authenticate:
   googleCredentialsFile: "google-client-secrets.json"
+
+files:
+  dir: "./files"

@@ -32,11 +32,7 @@ build/
 .vscode/
 
 ### CA config
-/ca/ca.key
-/ca/ca.crt
-/ca/ca.crl
-/ca/work/*
-/ca/newcerts/*
+/ca/files
 
 # Test
-client-secrets.json
+google-client-secrets.json

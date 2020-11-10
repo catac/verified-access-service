@@ -21,7 +21,7 @@ This is a TEST implementation of the "Network Service" in the
   allow full access to the same service account email address. 
 
 ### Locally
-- Initialize the local CA, go into the `ca` subdir and run `./init.sh`
+- Initialize the local CA, run `./ca/init.sh`
 - Save the 'json credentials file' as `google-client-secrets.json`
 
 ## Tests
