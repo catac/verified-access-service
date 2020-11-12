@@ -37,8 +37,9 @@ public class FilesController {
     private MediaType findContentType(Path path, HttpServletRequest request) {
         String fullName = path.toAbsolutePath().toFile().getAbsolutePath();
         String contentType = request.getServletContext().getMimeType(fullName);
-        if(contentType == null){
-            contentType = "application/octet-stream";
+        // contentType is null if type cannot be determined
+        if(contentType == null) {
+            return null;
         }
         return MediaType.parseMediaType(contentType);
     }
@@ -52,10 +53,13 @@ public class FilesController {
                     HttpStatus.NOT_FOUND, "File not found"
             );
         }
-
-        return ResponseEntity
-                .ok()
-                .contentType(findContentType(path, request))
-                .body(Files.readAllBytes(path));
+        ResponseEntity.BodyBuilder bb = ResponseEntity.ok();
+        MediaType contentType = findContentType(path, request);
+        if(contentType != null){
+            bb.contentType(contentType);
+        }else{
+            bb.header(HttpHeaders.CONTENT_DISPOSITION, "inline;");
+        }
+        return bb.body(Files.readAllBytes(path));
     }
 }

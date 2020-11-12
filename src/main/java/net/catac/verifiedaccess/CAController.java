@@ -24,12 +24,9 @@ public class CAController {
     }
 
     // The CA in PEM format
-    @RequestMapping(value = "/ca.crt")
-    public ResponseEntity<byte[]> ca_pem() throws IOException {
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.parseMediaType("text/plain"))
-                .body(Files.readAllBytes(Paths.get("ca/files/ca.crt")));
+    @RequestMapping(value = "/ca.crt", produces = MediaType.TEXT_PLAIN_VALUE)
+    public byte[] ca_pem() throws IOException {
+        return Files.readAllBytes(Paths.get("ca/files/ca.crt"));
     }
 
     // The CRL in DER format
