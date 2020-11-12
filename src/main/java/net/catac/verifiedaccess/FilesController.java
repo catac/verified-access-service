@@ -56,7 +56,6 @@ public class FilesController {
         return ResponseEntity
                 .ok()
                 .contentType(findContentType(path, request))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + sanitizedName + "\"")
                 .body(Files.readAllBytes(path));
     }
 }
