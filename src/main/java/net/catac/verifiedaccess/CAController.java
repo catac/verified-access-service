@@ -1,6 +1,8 @@
 package net.catac.verifiedaccess;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +24,12 @@ public class CAController {
     }
 
     // The CA in PEM format
-    @RequestMapping("/ca.crt")
-    public byte[] ca_pem() throws IOException {
-        return Files.readAllBytes(Paths.get("ca/files/ca.crt"));
+    @RequestMapping(value = "/ca.crt")
+    public ResponseEntity<byte[]> ca_pem() throws IOException {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType("text/plain"))
+                .body(Files.readAllBytes(Paths.get("ca/files/ca.crt")));
     }
 
     // The CRL in DER format
