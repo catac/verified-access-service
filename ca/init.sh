@@ -10,7 +10,7 @@ echo "Checking or initialising files/ca.key ..."
 test -r files/ca.key || openssl genrsa -out files/ca.key 2048
 
 echo "Checking or initialising files/ca.crt ..."
-test -r files/ca.crt || openssl req -new -x509 -key files/ca.key -out files/ca.crt
+test -r files/ca.crt || openssl req -new -x509 -days 3650 -key files/ca.key -out files/ca.crt
 
 echo "Checking or initializing files/ca.cnf ..."
 if [ ! -r files/ca.cnf ]; then
